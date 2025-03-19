@@ -34,6 +34,8 @@ pipeline {
         DOCKER_IMAGE = "abhishekf5/ultimate-cicd:${BUILD_NUMBER}"
         // DOCKERFILE_LOCATION = "java-maven-sonar-argocd-helm-k8s/spring-boot-app/Dockerfile"
         REGISTRY_CREDENTIALS = credentials('docker-cred')
+        PORTAINER_URL = "https://13.58.154.13:9000/api"
+        PORTAINER_API_KEY = credentials('portainer-api-key') // Assuming you have stored your Portainer API key in Jenkins credentials
       }
       steps {
         script {
@@ -44,6 +46,22 @@ pipeline {
             }
         }
       }
+    }
+    stage('Update Portainer') {
+            steps {
+                script {
+                    // Use curl to notify Portainer about the new image
+                    sh """
+                        curl -X POST -H "Authorization: Bearer ${PORTAINER_API_KEY}" \
+                        -H "Content-Type: application/json" \
+                        -d '{
+                            "image": "${DOCKER_IMAGE}",
+                            "tag": "${BUILD_NUMBER}"
+                        }' \
+                        ${PORTAINER_URL}/endpoints/1/docker/images/create
+                    """
+                }
+            }
     }
     stage('Update Deployment File') {
         environment {
