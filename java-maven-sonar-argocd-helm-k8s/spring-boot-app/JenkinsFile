@@ -1,10 +1,5 @@
 pipeline {
-  agent {
-    docker {
-      image 'rupeshpavari/ultimate-cicd:latest'
-      args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
-    }
-  }
+  agent any
 
   environment {
     DOCKER_IMAGE = "rupeshpavari/ultimate-cicd:${BUILD_NUMBER}"
@@ -16,7 +11,25 @@ pipeline {
         sh 'echo passed'
       }
     }
-
+stage('Checkout') {
+            agent {
+                label 'docker'  // Run on Docker node
+            }
+            steps {
+                // Checkout the code
+                sh 'echo "Checking out on Docker node"'
+                // Add additional checkout commands if necessary
+            }
+        }
+  stage('Build') {
+            agent {
+                label 'docker'  // Run on Docker node
+            }
+            steps {
+                // Running inside Docker container
+                sh 'docker run --rm -v $PWD:/app ${DOCKER_IMAGE} bash -c "echo Building inside Docker container"'
+            }
+        }
     stage('Build and Test') {
       steps {
         sh 'ls -ltr'
