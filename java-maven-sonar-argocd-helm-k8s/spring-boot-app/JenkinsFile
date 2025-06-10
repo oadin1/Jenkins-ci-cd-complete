@@ -59,6 +59,8 @@ pipeline {
         withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
           sh '''
             BUILD_NUMBER=${BUILD_NUMBER}
+            ls -la .git || echo "No .git directory!"
+
             sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
             git config user.email "omkardeungale811@gmail.com"
             git config user.name "oadin1"
