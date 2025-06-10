@@ -61,6 +61,7 @@ pipeline {
             git config user.email "omkardeungale811@gmail.com"
             git config user.name "oadin1"
             BUILD_NUMBER=${BUILD_NUMBER}
+            pwd
             ls -la .git || echo "No .git directory!"
             cd java-maven-sonar-argocd-helm-k8s
             sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
