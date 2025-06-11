@@ -58,6 +58,7 @@ pipeline {
         steps {
             withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
                 sh '''
+                    pwd && echo "changing working directory"
                     cd java-maven-sonar-argocd-helm-k8s && git config user.email "omkardeungale811@gmail.com"
                     git config user.name "oadin1"
                     BUILD_NUMBER=${BUILD_NUMBER}
